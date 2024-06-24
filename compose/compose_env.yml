@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  cert-builder:
+    image: ca.examples/cert_builder
+    build:
+      context: certs/docker 
+      dockerfile: Dockerfile 
+    command: nginx
+    volumes:
+      - ./certs:/certs
+      - ./nginx_data:/logging
+    environment:
+      - OUTPUT=/certs
+      - CONF=/certs/_conf
+  nginx.test.loc:
+    image: nginx
+    ports:
+      - "443:443"
+    volumes:
+      - ./certs:/certs
+      - ./nginx:/etc/nginx/conf.d
+      - ./nginx_data:/nginx_data
+    restart: always
+    depends_on:
+      - cert-builder

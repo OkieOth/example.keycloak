@@ -1,0 +1,8 @@
+compose/certs/ca
+compose/certs/server
+compose/certs/client
+compose/nginx_data/**
+compose/rabbit_data/**
+compose/mongo*_data/**
+venv
+tmp

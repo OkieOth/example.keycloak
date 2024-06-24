@@ -2,7 +2,7 @@ version: "3"
 
 services:
   cert-builder:
-    image: ca.examples/cert_builder
+    image: keycloak-example/cert_builder
     build:
       context: certs/docker 
       dockerfile: Dockerfile 
@@ -13,14 +13,31 @@ services:
     environment:
       - OUTPUT=/certs
       - CONF=/certs/_conf
-  nginx.test.loc:
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: secretpassword
+      KC_HTTP_RELATIVE_PATH: /auth
+      KC_PROXY: edge
+      LOGIN_HOST_PORT: nginx.keycloak-example.loc
+      KC_HOSTNAME: nginx.keycloak-example.loc
+      DB_VENDOR: h2
+    command:
+      - start-dev
+      - --import-realm
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./keycloak/import.json:/opt/keycloak/data/import/import.json
+  nginx.keycloak-example.loc:
     image: nginx
     ports:
       - "443:443"
     volumes:
       - ./certs:/certs
       - ./nginx:/etc/nginx/conf.d
-      - ./nginx_data:/nginx_data
     restart: always
     depends_on:
       - cert-builder
+      - keycloak

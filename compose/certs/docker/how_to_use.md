@@ -7,5 +7,5 @@ docker run --rm \
     -v $(pwd)/..:/certs \
     -e OUTPUT=/output_dir \
     -e CONF=/certs/_conf \
-    ca.examples/cert_builder:0.1.0 nginx
+    keycloak.examples/cert_builder:0.1.0 nginx
 ```

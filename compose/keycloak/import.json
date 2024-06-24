@@ -1,0 +1,199 @@
+{
+  "realm": "test-realm",
+  "enabled": true,
+  "clients": [
+    {
+      "clientId": "test-client",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "test-client999",
+      "redirectUris": ["*"],
+      "serviceAccountsEnabled": true,
+      "attributes": {
+        "access.token.lifespan": "23"
+      }
+    },
+    {
+      "clientId": "test-client-with-roles",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "test-client999",
+      "redirectUris": ["*"],
+      "serviceAccountsEnabled": true,
+      "attributes": {
+        "access.token.lifespan": "23"
+      }
+    },
+    {
+      "clientId": "test-client-unauthenticated",
+      "enabled": true,
+      "publicClient": true,
+      "directAccessGrantsEnabled": true,
+      "redirectUris": ["*"],
+      "protocolMappers": [
+        {
+          "name": "Tenant ID",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.attribute": "tenantId",
+            "claim.name": "tenantId",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "auth_time",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "AUTH_TIME",
+            "id.token.claim": "true",
+            "introspection.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "auth_time",
+            "jsonType.label": "long"
+          }
+        }
+      ]
+    }
+  ],
+  "roles": {
+    "realm": [
+      {
+        "name": "MyRealmRole1",
+        "containerId": "test-realm"
+      },
+      {
+        "name": "MyRealmRole2",
+        "containerId": "test-realm"
+      }
+    ],
+    "client": {
+      "test-client-with-roles": [
+        {
+          "name": "admin"
+        },
+        {
+          "name": "user"
+        }
+      ]
+    }
+  },
+  "groups": [
+    {
+      "name": "MyGroup",
+      "path": "/MyGroup"
+    },
+    {
+      "name": "MyGroup2",
+      "path": "/MyGroup2",
+      "subGroups": [
+        {
+          "name": "MySubGroup",
+          "path": "/MyGroup2/MySubGroup"
+        }
+      ]
+    },
+    {
+      "name": "MyGroupWithRoles",
+      "path": "/MyGroup",
+      "realmRoles": ["MyRealmRole2"],
+      "clientRoles": {
+        "test-client-with-roles": ["admin"]
+      }
+    },
+    {
+      "name": "MyGroup2WithRoles",
+      "path": "/MyGroup2",
+      "realmRoles": ["MyRealmRole1"],
+      "subGroups": [
+        {
+          "name": "MySubGroup",
+          "path": "/MyGroup2/MySubGroup",
+          "realmRoles": ["MyRealmRole2"],
+          "clientRoles": {
+            "test-client-with-roles": ["admin"]
+          }
+        }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "id": "homer.simpson",
+      "username": "homer.simpson",
+      "enabled": true,
+      "emailVerified": false,
+      "firstName": "Homer",
+      "lastName": "Simpson",
+      "email": "h.simpson@example.com",
+      "attributes": {
+        "tenantId": ["12345"]
+      },
+      "credentials": [
+        {
+          "type": "password",
+          "value": "iAmHomer__",
+          "temporary": false
+        }
+      ],
+      "requiredActions": [],
+      "realmRoles": [],
+      "clientRoles": {},
+      "groups": ["MyGroup2WithRoles"]
+    },
+    {
+      "id": "marge.simpson",
+      "username": "marge.s",
+      "enabled": true,
+      "emailVerified": false,
+      "firstName": "Marge",
+      "lastName": "Simpson",
+      "email": "marge24.simpson@yahoo.com",
+      "attributes": {
+        "tenantId": ["12345"]
+      },
+      "credentials": [
+        {
+          "type": "password",
+          "value": "bart+lisa+maggy",
+          "temporary": false
+        }
+      ],
+      "requiredActions": [],
+      "realmRoles": ["MyRealmRole1"],
+      "clientRoles": {},
+      "groups": []
+    },
+    {
+      "id": "mr.burns",
+      "username": "charles.m.burns",
+      "enabled": true,
+      "emailVerified": false,
+      "firstName": "Charles",
+      "lastName": "Burns",
+      "email": "the.burns@aol.com",
+      "attributes": {
+        "tenantId": ["66666"]
+      },
+      "credentials": [
+        {
+          "type": "password",
+          "value": "smithersSucks",
+          "temporary": false
+        }
+      ],
+      "requiredActions": [],
+      "realmRoles": ["MyRealmRole1"],
+      "clientRoles": {
+        "test-client-with-roles": ["admin"]
+      },
+      "groups": []
+    }
+  ]
+}

@@ -2,7 +2,7 @@
 
 scriptPos=${0%/*}
 
-imageBase=ca.examples/cert_builder
+imageBase=keycloak.example/cert_builder
 imageTag=$(cat $scriptPos/version.txt | grep -P '\d+\.\d+\.\d+')
 
 imageName="$imageBase:$imageTag"

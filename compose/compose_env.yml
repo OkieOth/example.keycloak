@@ -14,12 +14,15 @@ services:
       - OUTPUT=/certs
       - CONF=/certs/_conf
   keycloak:
-    image: quay.io/keycloak/keycloak:latest
+    image: keycloak/keycloak:latest
+    #image: quay.io/keycloak/keycloak:latest
     environment:
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: secretpassword
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: secretpassword
       KC_HTTP_RELATIVE_PATH: /auth
-      KC_PROXY: edge
+      # worked in previous versions
+      # KC_PROXY: edge
+      KC_PROXY_HEADERS: xforwarded
       LOGIN_HOST_PORT: nginx.keycloak-example.loc
       KC_HOSTNAME: nginx.keycloak-example.loc
       DB_VENDOR: h2
